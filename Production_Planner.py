@@ -1,6 +1,9 @@
 
 
 import evo
+import orderbook
+import random as rnd
+import pprint as pp
 
 """
 
@@ -50,6 +53,9 @@ def setups(l, orderBook):
         
         
         
+        
+        
+        
 Scoring func: lowPriority
 
 
@@ -57,19 +63,6 @@ Scoring func: lowPriority
 
 Scoring func: delays
         
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 """
@@ -100,6 +93,10 @@ def main():
     # Create environment
     E = evo.Evo()
 
+    O = orderbook.Orderbook()
+    O.add_order(1, 50, "Z")
+    O.add_order(0, 20, "X")
+    pp.pprint(O.orderBook)
 
     # Register fitness criteria
     E.add_fitness_criteria("setups", setups)
@@ -110,12 +107,12 @@ def main():
     E.add_agent("swapper", swapper, 1)
 
     # Add initial solution
-    L = [rnd.randrange(1, 99) for _ in range(20)]
-    E.add_solution(L)
-    print(E)
+    # L = [rnd.randrange(1, 99) for _ in range(20)]
+    # E.add_solution(L)
+    # print(E)
 
     # Run the evolver
-    E.evolve(100000, 500, 10000)
+    # E.evolve(100000, 500, 10000)
 
 
 if __name__ == '__main__':

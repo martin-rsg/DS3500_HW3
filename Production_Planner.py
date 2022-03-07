@@ -61,10 +61,10 @@ Scoring func: delays
 def setups(t):
 
     l, orderBook = t[0], t[1]
-    print(l)
-
     codes = [orderBook[order]['product_code'] for order in l]
-    return sum([1 for t in [(codes[i], codes[i + 1]) for i in range(len(codes) - 1)] if t[0] != t[1]])
+    result = sum([1 for t in [(codes[i], codes[i + 1]) for i in range(len(codes) - 1)] if t[0] != t[1]])
+    print(result)
+    return result
 
 
 def lowPriority(input):
@@ -129,7 +129,7 @@ def main():
     # print(E)
 
     # Run the evolver
-    E.evolve(100000, 500, 10000)
+    E.evolve(100000, 50, 10000)
 
     print(setups(T))
 

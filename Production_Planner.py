@@ -8,17 +8,16 @@ import pprint as pp
 
 Solution data structure:
 
-Each solution is a tuple of unique order id's:
+Each solution is a tuple, with a list of order numbers, and an orderBook dict 
+that stores data associated to each order:
 
 ([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], orderBook)
 
 ---> our goal is to place these in the best possible order
  
-Order data stored in an order book dictionary, 
-    possible storage locations: 
-        - gets defined in main
-        - an order book class (more accurate to real world)
-        - internally in Evo
+Order data stored in an order book dictionary, that is its own class, called orderbook.
+
+orderbook.orderBook looks like:
 
 {
 order_id (int) = {
@@ -74,11 +73,12 @@ def lowPriority(t):
 
     l, orderBook = t[0], t[1]
 
-    priorityValues = [orderBook[i+1]['priority'] for i in range(len(list(orderBook.keys())))]
+    priorityValues = [orderBook[orderNum]['priority'] for orderNum in l]
+    # print(priorityValues)
 
-    return sum([orderBook[i+1]['order_quantity']
-                for i in range(len(l))
-                if not priorityValues[i] and not sum(priorityValues[i:]) == 0])
+    return sum([orderBook[orderNum]['order_quantity']
+                for orderNum in l
+                if not priorityValues[orderNum-1] and not sum(priorityValues[orderNum:]) == 0])
 
 
 def delays(t):
@@ -92,9 +92,17 @@ def delays(t):
     """
 
     l, orderBook = t[0], t[1]
+    counter = 0
+
+    for i in range(len(l))[1:]:
+        curr_order = l[i]
+        prev_order = l[i-1]
 
 
-    pass
+        if curr_order < prev_order:
+            counter += orderBook[curr_order]['order_quantity']
+
+    return sum([orderBook[l[i]]['order_quantity'] for i in range(len(l))[1:] if l[i] < l[i-1]])
 
 
 def swapper(solutions):
@@ -104,6 +112,10 @@ def swapper(solutions):
     j = rnd.randrange(0, len(L))
     L[i], L[j] = L[j], L[i]
     return (L, solutions[0][1])
+
+
+def agent1(solutions):
+    """ Agent: """
 
 
 def main():
@@ -138,8 +150,8 @@ def main():
 
     # Register fitness criteria
     E.add_fitness_criteria("setups", setups)
-    # E.add_fitness_criteria("lowPriority", lowPriority)
-    # E.add_fitness_criteria("delays", delays)
+    E.add_fitness_criteria("lowPriority", lowPriority)
+    E.add_fitness_criteria("delays", delays)
 
     # Register agents
 
@@ -152,11 +164,14 @@ def main():
 
     # Run the evolver
 
-    # E.evolve(100000, 50, 10000)
+    # def (n=1, dom=100, status=100):
+    E.evolve(10000, 100, 100)
 
-    # print(setups(T))
 
-    print(lowPriority(T))
+
+    # print(f'setups: {setups(T)}')
+    # print(f'lowPriority: {lowPriority(T)}')
+    # print(f'delay: {delays(T)}')
 
 if __name__ == '__main__':
     main()

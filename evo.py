@@ -94,7 +94,6 @@ class Evo:
     def _reduce_nds(S, p):
         return S - {q for q in S if Evo._dominates(p,q)}
 
-
     def remove_dominated(self):
         """ Remove dominated solutions """
         nds = reduce(Evo._reduce_nds, self.pop.keys(), self.pop.keys())

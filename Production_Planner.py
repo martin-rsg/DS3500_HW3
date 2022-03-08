@@ -63,15 +63,37 @@ def setups(t):
     l, orderBook = t[0], t[1]
     codes = [orderBook[order]['product_code'] for order in l]
     result = sum([1 for t in [(codes[i], codes[i + 1]) for i in range(len(codes) - 1)] if t[0] != t[1]])
-    print(result)
     return result
 
 
-def lowPriority(input):
-    pass
+def lowPriority(t):
+
+    """ Go through order list until hitting final high priority order
+
+        Add to counter of quantities"""
+
+    l, orderBook = t[0], t[1]
+
+    priorityValues = [orderBook[i+1]['priority'] for i in range(len(list(orderBook.keys())))]
+
+    return sum([orderBook[i+1]['order_quantity']
+                for i in range(len(l))
+                if not priorityValues[i] and not sum(priorityValues[i:]) == 0])
 
 
-def delays(input):
+def delays(t):
+
+    """ For each order in t[0]      <-----  [6,2,3,89,4,5,7]
+            check if t[0][i] > t[0][i+1]
+            then counter += orderBook[t[0][quantity]]
+
+    [1, 2, 4, 3]
+
+    """
+
+    l, orderBook = t[0], t[1]
+
+
     pass
 
 
@@ -110,7 +132,7 @@ def main():
 
         O.add_order(priority, order_quantity, product_code)
 
-
+    pp.pprint(O.orderBook)
 
     # pp.pprint(O.orderBook)
 
@@ -129,9 +151,12 @@ def main():
     # print(E)
 
     # Run the evolver
-    E.evolve(100000, 50, 10000)
 
-    print(setups(T))
+    # E.evolve(100000, 50, 10000)
+
+    # print(setups(T))
+
+    print(lowPriority(T))
 
 if __name__ == '__main__':
     main()

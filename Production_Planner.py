@@ -1,3 +1,5 @@
+import pandas as pd
+
 import evo
 import orderbook
 import json
@@ -117,7 +119,42 @@ def swapper(solutions):
 def agent1(solutions):
     """ Agent: """
 
+def collection(pop):
+    """ collects all the data and creates a data frame
+    setup, priority, delays
+    key = tuple of tuples
+    - string of "fitness func" and then score
+    - setup = 1st tuple
+    - priority score = 2nd tuple
+    - delay = 3rd tuple
 
+
+    key_list = [pop.keys()]
+    results = defa{} #make a default dictionary
+    for result in key_list:
+        if result[0] = "setups"
+            add results
+
+        {"Setups": key_list["setups"],
+                "Priority Score": key_list["lowPriority"],
+                "Delay": key_list["delays"]}
+    #df = pd.DataFrame(data = key_dict)
+    #print(df)
+    print(results)
+
+    """
+    key_list = [pop.keys()]
+    final_list =[]
+    for s in key_list:
+        new_dict = {}
+        new_dict["setups"] = list(s)[0:]
+        new_dict['lowPriority'] = list(s)[1:]
+        new_dict['delays'] = list(s)[2:]
+        final_list.append(new_dict)
+    print(final_list)
+    #data_final = pd.DataFrame(data = final_list)
+    #print(data_final)
+    #make the seaborn pair plot
 def main():
     # Create environment
     E = evo.Evo()
@@ -144,7 +181,7 @@ def main():
 
         O.add_order(priority, order_quantity, product_code)
 
-    pp.pprint(O.orderBook)
+    #pp.pprint(O.orderBook)
 
     # pp.pprint(O.orderBook)
 
@@ -165,9 +202,9 @@ def main():
     # Run the evolver
 
     # def (n=1, dom=100, status=100):
-    E.evolve(10000, 100, 100)
+    E.evolve(1000, 100, 100)
 
-
+    collection(E.pop)
 
     # print(f'setups: {setups(T)}')
     # print(f'lowPriority: {lowPriority(T)}')
@@ -175,3 +212,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

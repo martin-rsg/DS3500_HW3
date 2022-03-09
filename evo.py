@@ -64,8 +64,8 @@ class Evo:
             if i % status == 0:
                 self.remove_dominated()
                 print("Iteration:", i)
-                print("Population size:", self.size())
                 print(self)
+                print("Population size:", self.size())
 
         # Clean up the population
         self.remove_dominated()

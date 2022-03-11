@@ -1,10 +1,13 @@
 import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 import evo
 import orderbook
 import json
 import random as rnd
 import pprint as pp
+from collections import defaultdict
 
 """
 
@@ -122,39 +125,36 @@ def agent1(solutions):
 def collection(pop):
     """ collects all the data and creates a data frame
     setup, priority, delays
-    key = tuple of tuples
-    - string of "fitness func" and then score
-    - setup = 1st tuple
-    - priority score = 2nd tuple
-    - delay = 3rd tuple
-
-
-    key_list = [pop.keys()]
-    results = defa{} #make a default dictionary
-    for result in key_list:
-        if result[0] = "setups"
-            add results
-
-        {"Setups": key_list["setups"],
-                "Priority Score": key_list["lowPriority"],
-                "Delay": key_list["delays"]}
-    #df = pd.DataFrame(data = key_dict)
-    #print(df)
-    print(results)
-
     """
     key_list = [pop.keys()]
-    final_list =[]
-    for s in key_list:
-        new_dict = {}
-        new_dict["setups"] = list(s)[0:]
-        new_dict['lowPriority'] = list(s)[1:]
-        new_dict['delays'] = list(s)[2:]
-        final_list.append(new_dict)
-    print(final_list)
-    #data_final = pd.DataFrame(data = final_list)
-    #print(data_final)
-    #make the seaborn pair plot
+    new_dict = {}
+    new_dict["Setups"] = []
+    new_dict["Priority Score"] = []
+    new_dict["Delay"] = []
+    for t in key_list[0]:
+
+        for sub_t in t:
+            fitnessFunc, score = sub_t[0], sub_t[1]
+            if fitnessFunc == "setups":
+                new_dict["Setups"].append(score)
+            if fitnessFunc == "lowPriority":
+                new_dict["Priority Score"].append(score)
+            if fitnessFunc == "delays":
+                new_dict["Delay"].append(score)
+
+    print(new_dict)
+
+    """
+    transforming the data into a data frame
+    """
+    data_final = pd.DataFrame(data = new_dict)
+
+    """
+    plotting the data
+    """
+    sns.pairplot(data_final)
+    plt.show()
+
 def main():
     # Create environment
     E = evo.Evo()
@@ -197,7 +197,6 @@ def main():
     # Add initial solution
     T = (list(O.orderBook.keys()), O.orderBook)
     E.add_solution(T)
-    # print(E)
 
     # Run the evolver
 

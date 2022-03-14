@@ -38,27 +38,6 @@ order_id (int) = {
                   },
      etc...
             }
-            
------------
-            
-Scoring func: setups
-
-def setups(l, orderBook):
-    
-    codes = [orderBook[order][product_code] for order in l]
-        
-    return [1 for t in [(codes[i], codes[i+1]) for i in range(len(codes)-1)]].sum()
-    
-    
-        codes: [X, Z, A, A, B, Z, Z, A, X, X]
-        tuples: [(X, Z), (Z, A), (A, A), (A, B), etc...]
-        setups: [1,       1,             1,      ....].sum() = 3
-        
-
-        
-Scoring func: lowPriority
-
-Scoring func: delays
 """
 
 
@@ -191,6 +170,39 @@ def priorityAgent(solutions):
 
     return (l, solutions[0][1])
 
+
+def delaysAgent(solutions):
+
+    l = solutions[0][0]
+
+    # find all indexes of orders that are delayed
+    delayLocations = [i for i in range(1, len(l)) if l[i] < l[i-1]]
+
+    # don't do anything if list is already in order
+    if len(delayLocations) == 0:
+        return (l, solutions[0][1])
+
+    # pick one at random
+    targetOrderLoc = rnd.choice(delayLocations)
+
+    # swap it with the one in front of it
+    # check if still out of order
+    # if not, repeat
+    cond, attempts = False, 0
+    while not cond:
+        i = targetOrderLoc - attempts
+        j = i - 1
+        if l[i] > l[j]:
+            cond = True
+        elif i == 0:
+            attempts += 1
+        else:
+            l[i], l[j] = l[j], l[i]
+            attempts += 1
+
+    return (l, solutions[0][1])
+
+
 def collection(pop):
     """ collects all the data and creates a data frame
     setup, priority, delays
@@ -224,7 +236,9 @@ def collection(pop):
     sns.pairplot(data_final)
     plt.show()
 
+
 def main():
+
     # Create environment
     E = evo.Evo()
 
@@ -250,10 +264,6 @@ def main():
 
         O.add_order(priority, order_quantity, product_code)
 
-    #pp.pprint(O.orderBook)
-
-    # pp.pprint(O.orderBook)
-
     # Register fitness criteria
     E.add_fitness_criteria("setups", setups)
     E.add_fitness_criteria("lowPriority", lowPriority)
@@ -264,24 +274,19 @@ def main():
     E.add_agent("swapper", swapper, 3)
     E.add_agent("priorityAgent", priorityAgent, 3)
     E.add_agent("setupsAgent", setupsAgent, 3)
+    E.add_agent("delaysAgent", delaysAgent, 3)
 
     # Add initial solution
     T = (list(O.orderBook.keys()), O.orderBook)
     E.add_solution(T)
 
-    # Run the evolver
+    E.evolve(100000, 100, 100)
 
-    # def (n=1, dom=100, status=100):
-    E.evolve(50000, 100, 100)
+    E.dump_csv()
 
     collection(E.pop)
 
-    # print(f'setups: {setups(T)}')
-    # print(f'lowPriority: {lowPriority(T)}')
-    # print(f'delay: {delays(T)}')
 
-
-    # swapper(T)
 
 if __name__ == '__main__':
     main()

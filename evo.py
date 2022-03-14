@@ -8,6 +8,7 @@ Assumes no Solutions class.
 import random as rnd
 import copy
 from functools import reduce
+import csv
 
 class Evo:
 
@@ -106,3 +107,16 @@ class Evo:
         for eval,sol in self.pop.items():
             rslt += str(dict(eval))+":\t"+str(sol)+"\n"
         return rslt
+
+    def dump_csv(self):
+        " Create the CSV that lists all of the optimal tradeoffs"
+
+        scoresList = [["Rosenberg&Akinci", "setups", "lowpriority", "delays"]]
+
+        for key in self.pop.keys():
+            print(key)
+            scoresList.append(["Rosenberg&Akinci", key[0][1], key[1][1], key[2][1]])
+
+        with open('productionScheduleResults.csv', 'w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerows(scoresList)
